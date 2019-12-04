@@ -14,7 +14,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 class ServerThread extends SocketThread {
-
+// c
     protected int clientId = -1;
 
     private int genPeerId() {

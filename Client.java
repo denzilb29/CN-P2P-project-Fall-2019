@@ -17,7 +17,7 @@ import java.lang.*;
 class ClientSocket extends SocketThread {
 //test
     protected int peerId;
-
+//hello
     public void setPeerId(int id) {
         this.peerId = id;
     }

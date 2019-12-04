@@ -195,35 +195,36 @@ public class Server extends Peer{
         try {
             for(;;) {
                 System.out.println(this.val + " is waiting clients...");
-                Socket p = ss.accept();
-                ServerThread st = new ServerThread();
-                st.setFileChunk(chunkList);
-                st.setFileName(this.des);
-                st.setSocket(p);
-                st.start();
+                Socket socket = ss.accept();
+                ServerThread serverThread = new ServerThread();
+                serverThread.setFileChunk(chunkList);
+                serverThread.setFileName(this.des);
+                serverThread.setSocket(socket);
+                serverThread.start();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioexception) {
+            ioexception.printStackTrace();
         }
 
     }
 
     private static void ReadConfig() {
         try {
-            Scanner f = new Scanner(new FileInputStream("config.txt"));
+            Scanner scanner = new Scanner(new FileInputStream("config.txt"));
             // server line
-            int serverId = f.nextInt();
-            pNumber = f.nextInt();
-            for(;f.hasNext();) {
-                int peerId = f.nextInt();
-                ArrayList<Integer> peerInfo = new ArrayList<Integer>();
-                peerInfo.add(f.nextInt());
-                peerInfo.add(f.nextInt());
-                peerInfo.add(f.nextInt());
-                peerConfig.put(peerId, peerInfo);
+            int sid = scanner.nextInt();
+            pNumber = scanner.nextInt();
+            for(;scanner.hasNext();) {
+                int pid = scanner.nextInt();
+                ArrayList<Integer> list = new ArrayList<Integer>();
+                list.add(scanner.nextInt());
+                list.add(scanner.nextInt());
+                list.add(scanner.nextInt());
+                peerConfig.put(pid, list);
             }
-            f.close();
-        } catch (FileNotFoundException e) {
+            scanner.close();
+        }
+        catch (FileNotFoundException fileNotFoundException) {
             pNumber = 37000;
             System.out.println("Configuration failed. Will use random port for all peers");
         }
@@ -251,14 +252,17 @@ public class Server extends Peer{
             }
             
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+        }
+        catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        finally {
             try {
                 br.close();
                 fr.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            }
+            catch (IOException ioException) {
+                ioException.printStackTrace();
             }
         }
     }
@@ -266,7 +270,7 @@ public class Server extends Peer{
     public static void main(String[] args) throws IOException{
 
         String wd = System.getProperty("user.dir");
-        String filePath = wd+"//config.txt";
+        String fp = wd+"//config.txt";
         //String appendText = "9000 1 2";
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -295,9 +299,9 @@ public class Server extends Peer{
         ReadConfig();
 
         String inputFile = "sample.txt";
-
+        int var2=0;
         if(args.length <= 0) {
-            ArrayList<Integer> ls = new ArrayList<>();
+            ++var2;
         }
         else{
             inputFile = args[0];

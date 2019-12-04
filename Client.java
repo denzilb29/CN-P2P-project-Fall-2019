@@ -136,9 +136,9 @@ public class Client extends Peer implements Runnable {
         stream.flush();
     }
 
-    public boolean checkingChunk() {
-        for(int key: chunkIndex) {
-            if(chunkList.containsKey(key)){
+    public boolean checkPiece() {
+        for(int i: chunkIndex) {
+            if(chunkList.containsKey(i)){
                 continue;
             }
             else{
@@ -147,26 +147,26 @@ public class Client extends Peer implements Runnable {
         }
         //This means we already had all chunks, combine and write it out
         try {
-            File fout = new File(mfn);
+            File f = new File(mfn);
             int h = 0;
-            if(!fout.exists()){
+            if(!f.exists()){
                 ++h;
             }
             else{
-                fout.delete();
+                f.delete();
             }
-            FileOutputStream fs = new FileOutputStream(fout);
+            FileOutputStream fos = new FileOutputStream(f);
             int i=0;
             while(i < chunkIndex.size()){
                 saveChunkFile(i, chunkList.get(chunkIndex.get(i)));
-                fs.write(chunkList.get(chunkIndex.get(i)));
+                fos.write(chunkList.get(chunkIndex.get(i)));
                 ++i;
             }
-            fs.flush();
-            fs.close();
+            fos.flush();
+            fos.close();
             System.out.println("[" + peerName + "] Finished downloading and writing");
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
 
         return true;
@@ -176,11 +176,11 @@ public class Client extends Peer implements Runnable {
         try {
             //Step 1: Bootstrap. Register and get peer id
             Socket s = new Socket("localhost", sp);
-            ObjectOutputStream oStream = new ObjectOutputStream(s.getOutputStream());
-            printMsg(oStream, "REGISTER");
-            ObjectInputStream iStream = new ObjectInputStream(s.getInputStream());
-            pid = iStream.readInt();
-            p = iStream.readInt();
+            ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
+            printMsg(oos, "REGISTER");
+            ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+            pid = ois.readInt();
+            p = ois.readInt();
             peerName = "PEER" + pid;
             System.out.println(pid);
             // Create a peerDir to save file chunk from server
@@ -192,17 +192,17 @@ public class Client extends Peer implements Runnable {
                 peerDir.mkdir();
             }
             //Step 2: Get chunk list
-            printMsg(oStream, "LIST");
-            chunkIndex = (ArrayList<Integer>) iStream.readObject();
+            printMsg(oos, "LIST");
+            chunkIndex = (ArrayList<Integer>) ois.readObject();
             //Step 3: Get initial chunks from server;
             int startIndex = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * (pid % TOTAL_PEERS));
             int endIndex = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * ((pid  % TOTAL_PEERS) + 1));
             int i = startIndex;
             while(i < endIndex){
-                printMsg(oStream, "REQUEST");
-                printMsg(oStream, chunkIndex.get(i));
-                int x = iStream.readInt();
-                byte[] chunk = (byte[]) iStream.readObject();
+                printMsg(oos, "REQUEST");
+                printMsg(oos, chunkIndex.get(i));
+                int x = ois.readInt();
+                byte[] chunk = (byte[]) ois.readObject();
                 chunkList.put(x, chunk);
                 System.out.println("Received Chunk #" + chunkIndex.get(i) + " from server");
                 saveChunkFile(x, chunk);
@@ -211,8 +211,8 @@ public class Client extends Peer implements Runnable {
             CreateSummaryFile(0);
             Random rand = new Random();
             // Step 3-1: Get filename
-            printMsg(oStream, "NAME");
-            String filePath = (String) iStream.readObject();
+            printMsg(oos, "NAME");
+            String filePath = (String) ois.readObject();
             String basename = new File(filePath).getName();
             String extension = basename.substring(basename.lastIndexOf('.') + 1);
             String fileRoot = basename.substring(0, basename.lastIndexOf('.'));
@@ -220,24 +220,24 @@ public class Client extends Peer implements Runnable {
             System.out.println("Output file is " + mfn);
             //Step 4: Get a upload neighbor and download neighbor
             ////////////////////////////////////////////////////
-            printMsg(oStream, "PEER");
-            printMsg(oStream, pid);
-            pl = (HashMap<Integer, Integer>) iStream.readObject();
+            printMsg(oos, "PEER");
+            printMsg(oos, pid);
+            pl = (HashMap<Integer, Integer>) ois.readObject();
 
             System.out.println("[" + peerName + "] Ask bootstrap server for neighbors:");
-            dPe = (int) iStream.readObject();
-            uPe = (int) iStream.readObject();
+            dPe = (int) ois.readObject();
+            uPe = (int) ois.readObject();
             dPo = pl.containsKey(dPe) ? pl.get(dPe) : 0;
             uPo = pl.containsKey(uPe) ? pl.get(uPe) : 0;
             Thread.sleep(1000);
             while (this.dPo <= 0 || this.uPo <= 0){
-                printMsg(oStream, "PEER");
-                printMsg(oStream, pid);
-                pl = (HashMap<Integer, Integer>) iStream.readObject();
+                printMsg(oos, "PEER");
+                printMsg(oos, pid);
+                pl = (HashMap<Integer, Integer>) ois.readObject();
 
                 System.out.println("[" + peerName + "] Ask bootstrap server for neighbors:");
-                dPe = (int) iStream.readObject();
-                uPe = (int) iStream.readObject();
+                dPe = (int) ois.readObject();
+                uPe = (int) ois.readObject();
                 dPo = pl.containsKey(dPe) ? pl.get(dPe) : 0;
                 uPo = pl.containsKey(uPe) ? pl.get(uPe) : 0;
                 Thread.sleep(1000);
@@ -259,7 +259,7 @@ public class Client extends Peer implements Runnable {
                         ObjectOutputStream oDownStream = new ObjectOutputStream(downSock.getOutputStream());
                         ObjectInputStream iDownStream = new ObjectInputStream(downSock.getInputStream());
                         System.out.println("Connection Made!");
-                        for (;!checkingChunk();) {
+                        for (;!checkPiece();) {
                             System.out.println("Got chunk list from neighbor");
                             printMsg(oDownStream, "LIST");
                             ArrayList<Integer> c = (ArrayList<Integer>) iDownStream.readObject();

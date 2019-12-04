@@ -108,14 +108,13 @@ class MultithreadedS extends SocketThread {
 // This is the file owner server
 public class Server extends Peer{
 
-    private String peerName = "Server";
+    private String val = "Server";
     String wd = System.getProperty("user.dir");
-    private String filePath = wd+"//Test.pptx";
-    public static int port = 37000;
-    private ServerSocket serverSocket;
-    public static HashMap<Integer, Integer> peerList = new HashMap<Integer, Integer>();
-    public static HashMap<Integer, ArrayList<Integer>> peerConfig = new HashMap<Integer, ArrayList<Integer>>();
-    //String wd = System.getProperty("user.dir");
+    private String des = wd+"//Test.pptx";
+    public static int pNumber = 37000;
+    private ServerSocket ss;
+    public static HashMap<Integer, Integer> peerList = new HashMap<>();
+    public static HashMap<Integer, ArrayList<Integer>> peerConfig = new HashMap<>();
 
     static{
         if (peerList != null) {
@@ -131,28 +130,28 @@ public class Server extends Peer{
         this(System.getProperty("user.dir")+"//Test.pptx", 37000);
     }
 
-    public Server(String filePath) {
-        this(filePath, 37000);
+    public Server(String des) {
+        this(des, 37000);
     }
 
-    public Server(String filePath, int port) {
+    public Server(String des, int pNumber) {
         /*if (null != filePath && new File(filePath).exists()) {
             this.filePath = filePath;
         }*/
 
-        if (null != filePath) {
-            if(new File(filePath).exists()){
-                this.filePath = filePath;
+        if (null != des) {
+            if(new File(des).exists()){
+                this.des = des;
             }
         }
         else{
             HashMap<Integer,Integer> m = new HashMap<>();
         }
 
-        this.port = port;
+        this.pNumber = pNumber;
 
         try {
-            serverSocket = new ServerSocket(this.port);
+            ss = new ServerSocket(this.pNumber);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -176,7 +175,7 @@ public class Server extends Peer{
                 sepDir.mkdir();
             }
             // Read everything to memory
-            FileInputStream fs = new FileInputStream(this.filePath);
+            FileInputStream fs = new FileInputStream(this.des);
             byte[] buffer = new byte[this.BUFFER_SIZE];
             int ch;
             int index = 0;
@@ -202,11 +201,11 @@ public class Server extends Peer{
 
         try {
             for(;;) {
-                System.out.println(this.peerName + " is waiting clients...");
-                Socket p = serverSocket.accept();
+                System.out.println(this.val + " is waiting clients...");
+                Socket p = ss.accept();
                 ServerThread st = new ServerThread();
                 st.setFileChunk(chunkList);
-                st.setFileName(this.filePath);
+                st.setFileName(this.des);
                 st.setSocket(p);
                 st.start();
             }
@@ -221,7 +220,7 @@ public class Server extends Peer{
             Scanner f = new Scanner(new FileInputStream("config.txt"));
             // server line
             int serverId = f.nextInt();
-            port = f.nextInt();
+            pNumber = f.nextInt();
             for(;f.hasNext();) {
                 int peerId = f.nextInt();
                 ArrayList<Integer> peerInfo = new ArrayList<Integer>();
@@ -232,7 +231,7 @@ public class Server extends Peer{
             }
             f.close();
         } catch (FileNotFoundException e) {
-            port = 37000;
+            pNumber = 37000;
             System.out.println("Configuration failed. Will use random port for all peers");
         }
     }
@@ -311,6 +310,6 @@ public class Server extends Peer{
             inputFile = args[0];
         }
 
-        new Server(inputFile, port).Start();
+        new Server(inputFile, pNumber).Start();
     }
 }

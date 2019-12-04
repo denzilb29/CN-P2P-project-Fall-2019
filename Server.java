@@ -13,9 +13,9 @@ import java.io.PrintWriter;
 import java.io.BufferedReader; 
 import java.io.InputStreamReader;
 
-class ServerThread extends SocketThread {
+class MultithreadedS extends SocketThread {
     
-    protected int clientId = -1;
+    protected int cid = -1;
     
     private int generatePID() {
         int count=0;
@@ -45,7 +45,7 @@ class ServerThread extends SocketThread {
                     }
                 }
                 String message = (String) payload;
-                System.out.println("[Server] Received message (" + message + ") from " + clientId);
+                System.out.println("[Server] Received message (" + message + ") from " + cid);
                 int p = -1;
 
                 
@@ -115,7 +115,7 @@ class ServerThread extends SocketThread {
                         // Close stream and exit thread
                         oStream.close();
                         iStream.close();
-                        Server.peerList.remove(clientId);
+                        Server.peerList.remove(cid);
                         return;
                     }
                 //}
@@ -124,7 +124,7 @@ class ServerThread extends SocketThread {
             } catch (ClassNotFoundException | IOException e) {
                 e.printStackTrace();
                 System.out.println("[" + this.getName() + "]: Session ended.");
-                Server.peerList.remove(clientId);
+                Server.peerList.remove(cid);
                 return;
             }
         }

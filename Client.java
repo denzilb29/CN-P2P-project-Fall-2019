@@ -158,7 +158,7 @@ public class Client extends Peer implements Runnable {
             FileOutputStream fos = new FileOutputStream(f);
             int i=0;
             while(i < chunkIndex.size()){
-                saveChunkFile(i, chunkList.get(chunkIndex.get(i)));
+                storeF(i, chunkList.get(chunkIndex.get(i)));
                 fos.write(chunkList.get(chunkIndex.get(i)));
                 ++i;
             }
@@ -205,10 +205,10 @@ public class Client extends Peer implements Runnable {
                 byte[] piece = (byte[]) is.readObject();
                 chunkList.put(temp, piece);
                 System.out.println("Received Chunk #" + chunkIndex.get(i) + " from server");
-                saveChunkFile(temp, piece);
+                storeF(temp, piece);
                 ++i;
             }
-            CreateSummaryFile(0);
+            makeSumF(0);
             Random r = new Random();
             // Step 3-1: Get filename
             printMsg(os, "NAME");
@@ -252,20 +252,20 @@ public class Client extends Peer implements Runnable {
                         System.out.println("==================");
                         Thread.sleep(10000);
                         System.out.println("Making upload connection...");
-                        Socket upSock = new Socket("localhost", uPo);
-                        ObjectOutputStream oUpStream = new ObjectOutputStream(upSock.getOutputStream());
+                        Socket us = new Socket("localhost", uPo);
+                        ObjectOutputStream ous = new ObjectOutputStream(us.getOutputStream());
                         System.out.println("Making download connection...");
-                        Socket downSock = new Socket("localhost", dPo);
-                        ObjectOutputStream oDownStream = new ObjectOutputStream(downSock.getOutputStream());
-                        ObjectInputStream iDownStream = new ObjectInputStream(downSock.getInputStream());
+                        Socket dsk = new Socket("localhost", dPo);
+                        ObjectOutputStream ods = new ObjectOutputStream(dsk.getOutputStream());
+                        ObjectInputStream ids = new ObjectInputStream(dsk.getInputStream());
                         System.out.println("Connection Made!");
                         for (;!checkPiece();) {
                             System.out.println("Got chunk list from neighbor");
-                            printMsg(oDownStream, "LIST");
-                            ArrayList<Integer> c = (ArrayList<Integer>) iDownStream.readObject();
+                            printMsg(ods, "LIST");
+                            ArrayList<Integer> list = (ArrayList<Integer>) ids.readObject();
                             int i=0;
-                            while(i < c.size()){
-                                int q = c.get(i);
+                            while(i < list.size()){
+                                int q = list.get(i);
                                 if(!Client.chunkList.containsKey(q)) {
                                     System.out.print(q + "=> NEW\t");
                                 }
@@ -276,20 +276,20 @@ public class Client extends Peer implements Runnable {
                             }
                             System.out.println();
                             for (i = 0; i < Client.chunkIndex.size(); i++) {
-                                int q = Client.chunkIndex.get(i);
-                                if (!Client.chunkList.containsKey(q)) {
-                                    System.out.println("[" + Client.peerName + "] Ask PEER" + dPe + " Chunk #" + q);
-                                    printMsg(oDownStream, "ASK");
-                                    printMsg(oDownStream, q);
-                                    if (iDownStream.readInt() != 1) { //Means peer has that chunk
-                                        System.out.println("[" + Client.peerName + "] PEER" + dPe + " doesn't have Chunk #" + q);
+                                int temp = Client.chunkIndex.get(i);
+                                if (!Client.chunkList.containsKey(temp)) {
+                                    System.out.println("[" + Client.peerName + "] Ask PEER" + dPe + " Chunk #" + temp);
+                                    printMsg(ods, "ASK");
+                                    printMsg(ods, temp);
+                                    if (ids.readInt() != 1) { //Means peer has that chunk
+                                        System.out.println("[" + Client.peerName + "] PEER" + dPe + " doesn't have Chunk #" + temp);
                                     } 
                                     else {
-                                        printMsg(oDownStream, "REQUEST");
-                                        printMsg(oDownStream, q);
-                                        int x = iDownStream.readInt();
-                                        byte[] chunk = (byte[]) iDownStream.readObject();
-                                        Client.chunkList.put(x, chunk);
+                                        printMsg(ods, "REQUEST");
+                                        printMsg(ods, temp);
+                                        int temp2 = ids.readInt();
+                                        byte[] piece = (byte[]) ids.readObject();
+                                        Client.chunkList.put(temp2, piece);
                                         System.out.println("Received Chunk #" + chunkIndex.get(i) + " from Peer " + dPe);
                                     }
                                 }
@@ -299,13 +299,13 @@ public class Client extends Peer implements Runnable {
                             }
                             System.out.println("[" + Client.peerName + "] Finished pulling...");
                             System.out.println("Start pushing chunk list...");
-                            for (Integer aChunkIndex : Client.chunkIndex) {
-                                int q = aChunkIndex;
-                                if (Client.chunkList.containsKey(q)) {
-                                    System.out.print(q + " ");
-                                    printMsg(oUpStream, "DATA");
-                                    printMsg(oUpStream, q);
-                                    storeD(oUpStream, Client.chunkList.get(q));
+                            for (Integer ii : Client.chunkIndex) {
+                                int temp = ii;
+                                if (Client.chunkList.containsKey(temp)) {
+                                    System.out.print(temp + " ");
+                                    printMsg(ous, "DATA");
+                                    printMsg(ous, temp);
+                                    storeD(ous, Client.chunkList.get(temp));
                                 }
                                 else{
                                     continue;
@@ -316,8 +316,8 @@ public class Client extends Peer implements Runnable {
                             System.out.println("[" + Client.peerName + "] Finished pushing, sleep 1sec.");
                             Thread.sleep(1000);
                         }
-                    } catch (IOException | ClassNotFoundException | InterruptedException e) {
-                        e.printStackTrace();
+                    } catch (IOException | ClassNotFoundException | InterruptedException exceptions) {
+                        exceptions.printStackTrace();
                     }
 
                 }
@@ -330,61 +330,61 @@ public class Client extends Peer implements Runnable {
             css = new ServerSocket(this.p);
 
             for (;;) {
-                ClientSocket localDaemon = new ClientSocket();
-                Socket socket = null;
+                ClientSocket ld = new ClientSocket();
+                Socket sckt = null;
                 try {
                     System.out.println("Peer is listening at Port " + css.getLocalPort());
-                    socket = css.accept();
-                    localDaemon.setSocket(socket);
-                    localDaemon.setPid(Client.pid);
-                    localDaemon.setFileChunk(chunkList);
-                    localDaemon.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    sckt = css.accept();
+                    ld.setSocket(sckt);
+                    ld.setPid(Client.pid);
+                    ld.setFileChunk(chunkList);
+                    ld.start();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
                 }
             }
 
-        } catch (IOException | ClassNotFoundException | InterruptedException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException | InterruptedException exceptions) {
+            exceptions.printStackTrace();
         }
 
 
     }
 
-    private void saveChunkFile(int x, byte[] chunk) {
+    private void storeF(int x, byte[] chunk) {
         try {
-            FileOutputStream fso = new FileOutputStream(peerName + "Dir/" + x, false);
-            fso.write(chunk);
-            fso.flush();
-            fso.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            FileOutputStream fos = new FileOutputStream(peerName + "Dir/" + x, false);
+            fos.write(chunk);
+            fos.flush();
+            fos.close();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 
-    private void CreateSummaryFile(int c) {
+    private void makeSumF(int c) {
             try {
-                FileOutputStream fso = new FileOutputStream(peerName + "Dir/summary.txt", false);
-                StringBuilder sb = new StringBuilder();
+                FileOutputStream fos = new FileOutputStream(peerName + "Dir/summary.txt", false);
+                StringBuilder builder = new StringBuilder();
                 int i=0;
                 while(i < Client.chunkIndex.size()){
-                    int q = Client.chunkIndex.get(i);
+                    int temp = Client.chunkIndex.get(i);
                     ++i;
-                    if (!Client.chunkList.containsKey(q)) {
+                    if (!Client.chunkList.containsKey(temp)) {
                         continue;
                     }
                     else{
-                        sb.append(q);
-                        sb.append(" ");
+                        builder.append(temp);
+                        builder.append(" ");
                     }
                 }
-                fso.write(sb.toString().getBytes());
-                fso.flush();
-                fso.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                fos.write(builder.toString().getBytes());
+                fos.flush();
+                fos.close();
+            } catch (FileNotFoundException fileNotFoundException) {
+                fileNotFoundException.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             }
     }
 

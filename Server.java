@@ -46,83 +46,57 @@ class MultithreadedS extends SocketThread {
                 }
                 String m = (String) obj;
                 System.out.println("[Server] Received message (" + m + ") from " + cid);
-                int p = -1;
-
-                
-
-
-                //switch (message) {
-
-                    if (m.compareTo("LIST")==0) {
-                        // Send chunk list
-                        ArrayList<Integer> q = new ArrayList<Integer>(this.workingChunk.size());
-                        int i=0;
-                        while(i < this.workingChunk.size()){
-                            if(this.workingChunk.containsKey(i)){
-                                q.add(i);
-                            }
-                            ++i;
+                int var1 = -1;
+                if (m.compareTo("LIST")==0) {
+                    ArrayList<Integer> list1 = new ArrayList<Integer>(this.workingChunk.size());
+                    int i=0;
+                    while(i < this.workingChunk.size()){
+                        if(this.workingChunk.containsKey(i)){
+                            list1.add(i);
                         }
-                        send(q);
-                        //break;
+                        ++i;
                     }
-                    else if (m.compareTo("NAME")==0) {
-                        // Send file name
-                        // Additional let us send the filename
-                        send((Object) this.fileName);
-                        //break;
+                    send(list1);
+                }
+                else if (m.compareTo("NAME")==0) {
+                    send((Object) this.fileName);
+                }
+                else if(m.compareTo("REQUEST")==0) {
+                    var1 = this.iStream.readInt();
+                    send(var1);
+                    send(this.workingChunk.get(var1));
+                }
+                else if(m.compareTo("DATA")==0) {
+                    var1 = this.iStream.readInt();
+                    byte[] chunk = (byte[]) this.iStream.readObject();
+                }
+                else if(m.compareTo("REGISTER")==0) {
+                    int x = this.generatePID();
+                    int y = Server.peerList.get(x);
+                    send(x);
+                    send(y);
+                }
+                else if(m.compareTo("PEER")==0) {
+                    System.out.print("[Server] Peer list:");
+                    int cpid = iStream.readInt();
+                    for (int i : Server.peerList.keySet()) {
+                        System.out.print(i + " ");
                     }
-                    else if(m.compareTo("REQUEST")==0) {
-                        // Read first int as chunk number
-                        p = this.iStream.readInt();
-                        // Send that chunk
-                        send(p);
-                        send(this.workingChunk.get(p));
-                       // break;
-                    }
-                    else if(m.compareTo("DATA")==0) {
-                        // Read first int as chunk number
-                        p = this.iStream.readInt();
-                        // Save received data
-                        byte[] chunk = (byte[]) this.iStream.readObject();
-                        //break;
-                    }
-                    else if(m.compareTo("REGISTER")==0) {
-                        // Read first int as peer port
-                        // int port = this.iStream.readInt();
-                        // Return a peer id for client
-                        int peer = this.generatePID();
-                        int port = Server.peerList.get(peer);
-                        send(peer);
-                        send(port);
-                        //break;
-                    }
-                    else if(m.compareTo("PEER")==0) {
-                        // Send Peer HasMap
-                        System.out.print("[Server] Peer list:");
-                        int clientPeerId = iStream.readInt();
-                        for (int _peer : Server.peerList.keySet()) {
-                            System.out.print(_peer + " ");
-                        }
-                        System.out.println();
-                        System.out.println("[Server] Send U/D neighbor to clients");
-                        send(Server.peerList);
-                        send((Object) (Server.peerConfig.get(clientPeerId)).get(1));
-                        send((Object) (Server.peerConfig.get(clientPeerId)).get(2));
-                       // break;
-                    }
-                    else if(m.compareTo("CLOSE")==0) {
-                        // Close stream and exit thread
-                        oStream.close();
-                        iStream.close();
-                        Server.peerList.remove(cid);
-                        return;
-                    }
-                //}
-
-
-            } catch (ClassNotFoundException | IOException e) {
-                e.printStackTrace();
+                    System.out.println();
+                    System.out.println("[Server] Send U/D neighbor to clients");
+                    send(Server.peerList);
+                    send((Object) (Server.peerConfig.get(cpid)).get(1));
+                    send((Object) (Server.peerConfig.get(cpid)).get(2));
+                }
+                else if(m.compareTo("CLOSE")==0) {
+                    oStream.close();
+                    iStream.close();
+                    Server.peerList.remove(cid);
+                    return;
+                }
+            }
+            catch (ClassNotFoundException | IOException ioexception) {
+                ioexception.printStackTrace();
                 System.out.println("[" + this.getName() + "]: Session ended.");
                 Server.peerList.remove(cid);
                 return;

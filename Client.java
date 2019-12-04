@@ -423,16 +423,16 @@ public class Client extends Peer implements Runnable {
         Start();
     }
 
-    private static int ReadConfig() {
+    private static int parseCFile() {
         try {
-            Scanner f = new Scanner(new FileInputStream("config.txt"));
+            Scanner scanner = new Scanner(new FileInputStream("config.txt"));
             // server line
-            int serverId = f.nextInt();
-            p = f.nextInt();
-            f.close();
+            int sid = scanner.nextInt();
+            p = scanner.nextInt();
+            scanner.close();
             return p;
 
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException fileNotFoundException) {
             System.out.println("Configuration failed. Will use random port for all peers");
 
         }
@@ -440,10 +440,10 @@ public class Client extends Peer implements Runnable {
     }
 
     public static void main(String[] args) throws IOException {
-        String wd = System.getProperty("user.dir");
-        String filePath = wd+"//config.txt";
+        String str = System.getProperty("user.dir");
+        String fp = str+"//config.txt";
         //String appendText = "9000 1 2";
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 /*
         System.out.println("Enter the server/client id number\n");
         String fid = reader.readLine();
@@ -473,15 +473,15 @@ public class Client extends Peer implements Runnable {
         }*/
 
         System.out.println("Do you want to begin? 1 for yes, 0 for no\n");
-        String beginProcess = reader.readLine();
-        int v = Integer.parseInt(beginProcess);
+        String bp = br.readLine();
+        int temp = Integer.parseInt(bp);
 
-        if(v == 1){
-            int _serverPort = ReadConfig();
+        if(temp == 1){
+            int sp = parseCFile();
             if(args.length > 0) {
-                 _serverPort = Integer.parseInt(args[0]);
+                 sp = Integer.parseInt(args[0]);
             }
-            new Client(_serverPort).Start();
+            new Client(sp).Start();
         }
         else {
             System.exit(0);

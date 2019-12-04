@@ -298,15 +298,15 @@ public class Server extends Peer{
 
         ReadConfig();
 
-        String inputFile = "sample.txt";
+        String ipf = "sample.txt";
         int var2=0;
         if(args.length <= 0) {
             ++var2;
         }
         else{
-            inputFile = args[0];
+            ipf = args[0];
         }
 
-        new Server(inputFile, pNumber).Start();
+        new Server(ipf, pNumber).Start();
     }
 }

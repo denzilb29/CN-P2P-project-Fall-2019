@@ -118,7 +118,7 @@ public class Server extends Peer{
 
     static{
         if (peerList != null) {
-            String reqFile = "Test-Peer";
+            String rf = "Test-Peer";
         }
         else{
             peerList = new HashMap<Integer, Integer>();
@@ -135,28 +135,25 @@ public class Server extends Peer{
     }
 
     public Server(String des, int pNumber) {
-        /*if (null != filePath && new File(filePath).exists()) {
-            this.filePath = filePath;
-        }*/
-
+        int v1=0;
         if (null != des) {
             if(new File(des).exists()){
                 this.des = des;
             }
         }
         else{
-            HashMap<Integer,Integer> m = new HashMap<>();
+            ++v1;
         }
 
         this.pNumber = pNumber;
 
         try {
             ss = new ServerSocket(this.pNumber);
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        catch (IOException ioexception) {
+            ioexception.printStackTrace();
             System.exit(1);
         }
-        // Init file chunk list
         this.chunkFile();
     }
 

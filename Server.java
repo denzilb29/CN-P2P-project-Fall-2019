@@ -208,7 +208,7 @@ public class Server extends Peer{
 
     }
 
-    private static void ReadConfig() {
+    private static void parseCFile() {
         try {
             Scanner scanner = new Scanner(new FileInputStream("config.txt"));
             // server line
@@ -296,7 +296,7 @@ public class Server extends Peer{
             Thread.currentThread().interrupt();
         }*/
 
-        ReadConfig();
+        parseCFile();
 
         String ipf = "sample.txt";
         int var2=0;

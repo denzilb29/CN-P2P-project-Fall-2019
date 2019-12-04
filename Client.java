@@ -134,7 +134,7 @@ public class Client extends Peer implements Runnable {
         stream.flush();
     }
 
-    public boolean checkChunk() {
+    public boolean checkingChunk() {
         for(int key: chunkIndex) {
             if(chunkList.containsKey(key)){
                 continue;
@@ -257,7 +257,7 @@ public class Client extends Peer implements Runnable {
                         ObjectOutputStream oDownStream = new ObjectOutputStream(downSock.getOutputStream());
                         ObjectInputStream iDownStream = new ObjectInputStream(downSock.getInputStream());
                         System.out.println("Connection Made!");
-                        for (;!checkChunk();) {
+                        for (;!checkingChunk();) {
                             System.out.println("Got chunk list from neighbor");
                             writeMessage(oDownStream, "LIST");
                             ArrayList<Integer> c = (ArrayList<Integer>) iDownStream.readObject();

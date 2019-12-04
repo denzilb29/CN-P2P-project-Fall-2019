@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e352981c-c0d4-4a6b-b976-9f2b16c4c854" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="e352981c-c0d4-4a6b-b976-9f2b16c4c854" name="Default Changelist" comment="..">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/ServerThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test-peer-2.pptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test-peer-3.pptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test-peer-4.pptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test-peer-5.pptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test-peer-6.pptx" beforeDir="false" />
     </list>
     <list id="28101e14-8bbe-427f-8788-7875887a816b" name=".." comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>check</find>
-    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -51,6 +52,16 @@
       <updated>1575474248725</updated>
     </task>
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value=".." />
+    <option name="LAST_COMMIT_MESSAGE" value=".." />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="218" y="2" key="CommitChangelistDialog2" timestamp="1575477237388">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="218" y="2" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1575477237388" />
   </component>
   <component name="masterDetails">
     <states>

@@ -14,10 +14,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 class ServerThread extends SocketThread {
-// c
+    
     protected int clientId = -1;
-
-    private int genPeerId() {
+    
+    private int generatePID() {
         int count=0;
         while(count < 100){
             if (Server.peerConfig.containsKey(count) && (!Server.peerList.containsKey(count))) {
@@ -91,7 +91,7 @@ class ServerThread extends SocketThread {
                         // Read first int as peer port
                         // int port = this.iStream.readInt();
                         // Return a peer id for client
-                        int peer = this.genPeerId();
+                        int peer = this.generatePID();
                         int port = Server.peerList.get(peer);
                         send(peer);
                         send(port);

@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e352981c-c0d4-4a6b-b976-9f2b16c4c854" name="Default Changelist" comment="..">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/Server.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SocketThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/SocketThread.class" afterDir="false" />
     </list>
     <list id="28101e14-8bbe-427f-8788-7875887a816b" name=".." comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,14 +14,22 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-10" />
     <option name="width" value="980" />
     <option name="height" value="1040" />
   </component>
+  <component name="ProjectId" id="1UWre1k0fWJCMTSaFZTztojjErs" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1575476077729" />
   </component>
   <component name="ServiceViewManager">
@@ -41,7 +49,7 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="e1900b25-6e83-409d-a241-98bd4377fc31" name="Default Changelist" comment="" />
+      <changelist id="e352981c-c0d4-4a6b-b976-9f2b16c4c854" name="Default Changelist" comment=".." />
       <created>1575474248725</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -62,6 +70,10 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="218" y="2" key="CommitChangelistDialog2/0.0.1280.800@0.0.1280.800" timestamp="1575477237388" />
+    <state x="423" y="324" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1575483496106">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="423" y="324" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.800@0.0.1280.800" timestamp="1575483496106" />
     <state width="600" height="424" key="javadoc.popup" timestamp="1575481614942">
       <screen x="0" y="0" width="1280" height="800" />
     </state>

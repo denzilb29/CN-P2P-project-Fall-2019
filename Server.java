@@ -208,7 +208,7 @@ public class Server extends Peer{
 
     }
 
-    private static void parseCFile() {
+    private static void ReadConfig() {
         try {
             Scanner scanner = new Scanner(new FileInputStream("config.txt"));
             // server line
@@ -296,17 +296,17 @@ public class Server extends Peer{
             Thread.currentThread().interrupt();
         }*/
 
-        parseCFile();
+        ReadConfig();
 
-        String ipf = "sample.txt";
+        String inputFile = "sample.txt";
         int var2=0;
         if(args.length <= 0) {
             ++var2;
         }
         else{
-            ipf = args[0];
+            inputFile = args[0];
         }
 
-        new Server(ipf, pNumber).Start();
+        new Server(inputFile, pNumber).Start();
     }
 }

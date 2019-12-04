@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e352981c-c0d4-4a6b-b976-9f2b16c4c854" name="Default Changelist" comment="..">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SocketThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/SocketThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client.java" afterDir="false" />
     </list>
     <list id="28101e14-8bbe-427f-8788-7875887a816b" name=".." comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,10 +61,10 @@
     <option name="LAST_COMMIT_MESSAGE" value=".." />
   </component>
   <component name="WindowStateProjectService">
-    <state x="217" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1575479693856">
+    <state x="217" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1575484052474">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="217" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.800@0.0.1280.800" timestamp="1575479693856" />
+    <state x="217" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.800@0.0.1280.800" timestamp="1575484052474" />
     <state x="218" y="2" key="CommitChangelistDialog2" timestamp="1575477237388">
       <screen x="0" y="0" width="1280" height="800" />
     </state>

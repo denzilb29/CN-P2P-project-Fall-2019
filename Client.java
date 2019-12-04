@@ -27,66 +27,68 @@ class ClientSocket extends SocketThread {
         for (;;) {
             try {
                 System.out.println("[" + this.peerName + "] Peer is listening command:");
-                Object payload = this.iStream.readObject();
-                assert (payload instanceof String);
-                String message = (String) payload;
-                System.out.println("[" + this.peerName + "] Received message (" + message + ")");
-                int p = -1;
-                if(message.compareTo("LIST") == 0){
-                    ArrayList<Integer> q = new ArrayList<Integer>(this.workingChunk.size());
-                    for (Integer key : this.workingChunk.keySet()) {
-                        q.add(key);
+                Object packet = this.iStream.readObject();
+                assert (packet instanceof String);
+                String msg = (String) packet;
+                System.out.println("[" + this.peerName + "] Received message (" + msg + ")");
+                int readIndex = -1;
+                if(msg.compareTo("LIST") == 0){
+                    ArrayList<Integer> list = new ArrayList<Integer>(this.workingChunk.size());
+                    for (Integer v : this.workingChunk.keySet()) {
+                        list.add(v);
                     }
-                    send(q);
+                    send(list);
                 }
-                else if(message.compareTo("REQUEST") == 0){
-                    p = this.iStream.readInt();
-                    send(p);
-                    send(this.workingChunk.get(p));
+                else if(msg.compareTo("REQUEST") == 0){
+                    readIndex = this.iStream.readInt();
+                    send(readIndex);
+                    send(this.workingChunk.get(readIndex));
                 }
-                else if(message.compareTo("ASK") == 0){
-                    p = this.iStream.readInt();
-                    if (!this.workingChunk.containsKey(p)) {
+                else if(msg.compareTo("ASK") == 0){
+                    readIndex = this.iStream.readInt();
+                    if (!this.workingChunk.containsKey(readIndex)) {
                         send(0);
                     }
                     else {
                         send(1);
                     }
                 }
-                else if(message.compareTo("DATA") == 0){
-                    p = this.iStream.readInt();
-                    byte[] chunk = (byte[]) this.iStream.readObject();
+                else if(msg.compareTo("DATA") == 0){
+                    readIndex = this.iStream.readInt();
+                    byte[] piece = (byte[]) this.iStream.readObject();
                     int t=0;
-                    if (this.workingChunk.containsKey(p)) {
+                    if (this.workingChunk.containsKey(readIndex)) {
                         ++t;
                     }
                     else{
-                        workingChunk.put(p, chunk);
-                        System.out.println("Received Chunk #" + p);
-                        saveChunkFile(p, chunk);
+                        workingChunk.put(readIndex, piece);
+                        System.out.println("Received Chunk #" + readIndex);
+                        storePiece(readIndex, piece);
                     }
                 }
-                else if(message.compareTo("CLOSE") == 0){
+                else if(msg.compareTo("CLOSE") == 0){
                     oStream.close();
                     iStream.close();
                     return;
                 }
-            } catch (ClassNotFoundException | IOException e) {
-                e.printStackTrace();
+            }
+            catch (ClassNotFoundException | IOException exceptions) {
+                exceptions.printStackTrace();
                 System.out.println("[" + this.getName() + "]: Session ended.");
                 return;
             }
         }
     }
 
-    private void saveChunkFile(int x, byte[] chunk) {
+    private void storePiece(int x, byte[] chunk) {
         try {
-            FileOutputStream fso = new FileOutputStream("PEER" + this.peerId + "Dir/" + x, false);
-            fso.write(chunk);
-            fso.flush();
-            fso.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            FileOutputStream fos = new FileOutputStream("PEER" + this.peerId + "Dir/" + x, false);
+            fos.write(chunk);
+            fos.flush();
+            fos.close();
+        }
+        catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 }

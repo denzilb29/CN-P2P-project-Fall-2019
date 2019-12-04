@@ -176,68 +176,68 @@ public class Client extends Peer implements Runnable {
         try {
             //Step 1: Bootstrap. Register and get peer id
             Socket s = new Socket("localhost", sp);
-            ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
-            printMsg(oos, "REGISTER");
-            ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-            pid = ois.readInt();
-            p = ois.readInt();
+            ObjectOutputStream os = new ObjectOutputStream(s.getOutputStream());
+            printMsg(os, "REGISTER");
+            ObjectInputStream is = new ObjectInputStream(s.getInputStream());
+            pid = is.readInt();
+            p = is.readInt();
             peerName = "PEER" + pid;
             System.out.println(pid);
             // Create a peerDir to save file chunk from server
-            File peerDir = new File(peerName + "Dir");
-            if(peerDir.exists()) {
+            File pd = new File(peerName + "Dir");
+            if(pd.exists()) {
                 System.out.println("Dir exists.");
             }
             else{
-                peerDir.mkdir();
+                pd.mkdir();
             }
             //Step 2: Get chunk list
-            printMsg(oos, "LIST");
-            chunkIndex = (ArrayList<Integer>) ois.readObject();
+            printMsg(os, "LIST");
+            chunkIndex = (ArrayList<Integer>) is.readObject();
             //Step 3: Get initial chunks from server;
-            int startIndex = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * (pid % TOTAL_PEERS));
-            int endIndex = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * ((pid  % TOTAL_PEERS) + 1));
-            int i = startIndex;
-            while(i < endIndex){
-                printMsg(oos, "REQUEST");
-                printMsg(oos, chunkIndex.get(i));
-                int x = ois.readInt();
-                byte[] chunk = (byte[]) ois.readObject();
-                chunkList.put(x, chunk);
+            int begin = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * (pid % TOTAL_PEERS));
+            int end = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * ((pid  % TOTAL_PEERS) + 1));
+            int i = begin;
+            while(i < end){
+                printMsg(os, "REQUEST");
+                printMsg(os, chunkIndex.get(i));
+                int temp = is.readInt();
+                byte[] piece = (byte[]) is.readObject();
+                chunkList.put(temp, piece);
                 System.out.println("Received Chunk #" + chunkIndex.get(i) + " from server");
-                saveChunkFile(x, chunk);
+                saveChunkFile(temp, piece);
                 ++i;
             }
             CreateSummaryFile(0);
-            Random rand = new Random();
+            Random r = new Random();
             // Step 3-1: Get filename
-            printMsg(oos, "NAME");
-            String filePath = (String) ois.readObject();
-            String basename = new File(filePath).getName();
-            String extension = basename.substring(basename.lastIndexOf('.') + 1);
-            String fileRoot = basename.substring(0, basename.lastIndexOf('.'));
-            mfn = fileRoot + "-peer-" + pid + "." + extension;
+            printMsg(os, "NAME");
+            String fp = (String) is.readObject();
+            String get_base = new File(fp).getName();
+            String get_ext = get_base.substring(get_base.lastIndexOf('.') + 1);
+            String fr = get_base.substring(0, get_base.lastIndexOf('.'));
+            mfn = fr + "-peer-" + pid + "." + get_ext;
             System.out.println("Output file is " + mfn);
             //Step 4: Get a upload neighbor and download neighbor
             ////////////////////////////////////////////////////
-            printMsg(oos, "PEER");
-            printMsg(oos, pid);
-            pl = (HashMap<Integer, Integer>) ois.readObject();
+            printMsg(os, "PEER");
+            printMsg(os, pid);
+            pl = (HashMap<Integer, Integer>) is.readObject();
 
             System.out.println("[" + peerName + "] Ask bootstrap server for neighbors:");
-            dPe = (int) ois.readObject();
-            uPe = (int) ois.readObject();
+            dPe = (int) is.readObject();
+            uPe = (int) is.readObject();
             dPo = pl.containsKey(dPe) ? pl.get(dPe) : 0;
             uPo = pl.containsKey(uPe) ? pl.get(uPe) : 0;
             Thread.sleep(1000);
             while (this.dPo <= 0 || this.uPo <= 0){
-                printMsg(oos, "PEER");
-                printMsg(oos, pid);
-                pl = (HashMap<Integer, Integer>) ois.readObject();
+                printMsg(os, "PEER");
+                printMsg(os, pid);
+                pl = (HashMap<Integer, Integer>) is.readObject();
 
                 System.out.println("[" + peerName + "] Ask bootstrap server for neighbors:");
-                dPe = (int) ois.readObject();
-                uPe = (int) ois.readObject();
+                dPe = (int) is.readObject();
+                uPe = (int) is.readObject();
                 dPo = pl.containsKey(dPe) ? pl.get(dPe) : 0;
                 uPo = pl.containsKey(uPe) ? pl.get(uPe) : 0;
                 Thread.sleep(1000);

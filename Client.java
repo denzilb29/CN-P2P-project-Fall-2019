@@ -16,10 +16,10 @@ import java.lang.*;
 
 class ClientSocket extends SocketThread {
 //test
-    protected int peerId;
+    protected int pid;
 //hello
-    public void setPeerId(int id) {
-        this.peerId = id;
+    public void setPid(int id) {
+        this.pid = id;
     }
 
     @Override
@@ -82,7 +82,7 @@ class ClientSocket extends SocketThread {
 
     private void storePiece(int x, byte[] chunk) {
         try {
-            FileOutputStream fos = new FileOutputStream("PEER" + this.peerId + "Dir/" + x, false);
+            FileOutputStream fos = new FileOutputStream("PEER" + this.pid + "Dir/" + x, false);
             fos.write(chunk);
             fos.flush();
             fos.close();
@@ -95,23 +95,23 @@ class ClientSocket extends SocketThread {
 
 public class Client extends Peer implements Runnable {
 
-    public static int serverPort = 37000;
+    public static int sp = 37000;
 
-    public static String mergeFileName = "merge.dat";
+    public static String mfn = "merge.dat";
 
-    public static int port = -2;
-    public ServerSocket clientServerSocket;
-    static int peerId = -1;
-    public static HashMap<Integer, Integer> peerList = new HashMap<Integer, Integer>();
+    public static int p = -2;
+    public ServerSocket css;
+    static int pid = -1;
+    public static HashMap<Integer, Integer> pl = new HashMap<Integer, Integer>();
 
-    private int downloadPort = -1;
-    private int downloadPeer = -1;
-    private int uploadPort = -1;
-    private int uploadPeer = -1;
+    private int dPo = -1;
+    private int dPe = -1;
+    private int uPo = -1;
+    private int uPe = -1;
 
-    public Client(int serverPort)
+    public Client(int sp)
     {
-        this.serverPort = serverPort;
+        this.sp = sp;
     }
 
     public Client() {
@@ -119,19 +119,19 @@ public class Client extends Peer implements Runnable {
     }
 
 
-    public static void writeMessage(ObjectOutputStream stream, String msg) throws IOException {
+    public static void printMsg(ObjectOutputStream stream, String msg) throws IOException {
         stream.writeObject(msg);
         stream.flush();
         stream.reset();
     }
 
-    public static void writeData(ObjectOutputStream stream, byte[] payload) throws IOException {
+    public static void storeD(ObjectOutputStream stream, byte[] payload) throws IOException {
         stream.writeObject(payload);
         stream.flush();
         stream.reset();
     }
 
-    public static void writeMessage(ObjectOutputStream stream, int value) throws IOException {
+    public static void printMsg(ObjectOutputStream stream, int value) throws IOException {
         stream.writeInt(value);
         stream.flush();
     }
@@ -147,7 +147,7 @@ public class Client extends Peer implements Runnable {
         }
         //This means we already had all chunks, combine and write it out
         try {
-            File fout = new File(mergeFileName);
+            File fout = new File(mfn);
             int h = 0;
             if(!fout.exists()){
                 ++h;
@@ -175,14 +175,14 @@ public class Client extends Peer implements Runnable {
     public void Start() {
         try {
             //Step 1: Bootstrap. Register and get peer id
-            Socket s = new Socket("localhost", serverPort);
+            Socket s = new Socket("localhost", sp);
             ObjectOutputStream oStream = new ObjectOutputStream(s.getOutputStream());
-            writeMessage(oStream, "REGISTER");
+            printMsg(oStream, "REGISTER");
             ObjectInputStream iStream = new ObjectInputStream(s.getInputStream());
-            peerId = iStream.readInt();
-            port = iStream.readInt();
-            peerName = "PEER" + peerId;
-            System.out.println(peerId);
+            pid = iStream.readInt();
+            p = iStream.readInt();
+            peerName = "PEER" + pid;
+            System.out.println(pid);
             // Create a peerDir to save file chunk from server
             File peerDir = new File(peerName + "Dir");
             if(peerDir.exists()) {
@@ -192,15 +192,15 @@ public class Client extends Peer implements Runnable {
                 peerDir.mkdir();
             }
             //Step 2: Get chunk list
-            writeMessage(oStream, "LIST");
+            printMsg(oStream, "LIST");
             chunkIndex = (ArrayList<Integer>) iStream.readObject();
             //Step 3: Get initial chunks from server;
-            int startIndex = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * (peerId % TOTAL_PEERS));
-            int endIndex = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * ((peerId  % TOTAL_PEERS) + 1));
+            int startIndex = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * (pid % TOTAL_PEERS));
+            int endIndex = (int)(1.0 * chunkIndex.size() / TOTAL_PEERS * ((pid  % TOTAL_PEERS) + 1));
             int i = startIndex;
             while(i < endIndex){
-                writeMessage(oStream, "REQUEST");
-                writeMessage(oStream, chunkIndex.get(i));
+                printMsg(oStream, "REQUEST");
+                printMsg(oStream, chunkIndex.get(i));
                 int x = iStream.readInt();
                 byte[] chunk = (byte[]) iStream.readObject();
                 chunkList.put(x, chunk);
@@ -211,39 +211,39 @@ public class Client extends Peer implements Runnable {
             CreateSummaryFile(0);
             Random rand = new Random();
             // Step 3-1: Get filename
-            writeMessage(oStream, "NAME");
+            printMsg(oStream, "NAME");
             String filePath = (String) iStream.readObject();
             String basename = new File(filePath).getName();
             String extension = basename.substring(basename.lastIndexOf('.') + 1);
             String fileRoot = basename.substring(0, basename.lastIndexOf('.'));
-            mergeFileName = fileRoot + "-peer-" + peerId + "." + extension;
-            System.out.println("Output file is " + mergeFileName);
+            mfn = fileRoot + "-peer-" + pid + "." + extension;
+            System.out.println("Output file is " + mfn);
             //Step 4: Get a upload neighbor and download neighbor
             ////////////////////////////////////////////////////
-            writeMessage(oStream, "PEER");
-            writeMessage(oStream, peerId);
-            peerList = (HashMap<Integer, Integer>) iStream.readObject();
+            printMsg(oStream, "PEER");
+            printMsg(oStream, pid);
+            pl = (HashMap<Integer, Integer>) iStream.readObject();
 
             System.out.println("[" + peerName + "] Ask bootstrap server for neighbors:");
-            downloadPeer = (int) iStream.readObject();
-            uploadPeer = (int) iStream.readObject();
-            downloadPort = peerList.containsKey(downloadPeer) ? peerList.get(downloadPeer) : 0;
-            uploadPort = peerList.containsKey(uploadPeer) ? peerList.get(uploadPeer) : 0;
+            dPe = (int) iStream.readObject();
+            uPe = (int) iStream.readObject();
+            dPo = pl.containsKey(dPe) ? pl.get(dPe) : 0;
+            uPo = pl.containsKey(uPe) ? pl.get(uPe) : 0;
             Thread.sleep(1000);
-            while (this.downloadPort <= 0 || this.uploadPort <= 0){
-                writeMessage(oStream, "PEER");
-                writeMessage(oStream, peerId);
-                peerList = (HashMap<Integer, Integer>) iStream.readObject();
+            while (this.dPo <= 0 || this.uPo <= 0){
+                printMsg(oStream, "PEER");
+                printMsg(oStream, pid);
+                pl = (HashMap<Integer, Integer>) iStream.readObject();
 
                 System.out.println("[" + peerName + "] Ask bootstrap server for neighbors:");
-                downloadPeer = (int) iStream.readObject();
-                uploadPeer = (int) iStream.readObject();
-                downloadPort = peerList.containsKey(downloadPeer) ? peerList.get(downloadPeer) : 0;
-                uploadPort = peerList.containsKey(uploadPeer) ? peerList.get(uploadPeer) : 0;
+                dPe = (int) iStream.readObject();
+                uPe = (int) iStream.readObject();
+                dPo = pl.containsKey(dPe) ? pl.get(dPe) : 0;
+                uPo = pl.containsKey(uPe) ? pl.get(uPe) : 0;
                 Thread.sleep(1000);
             }
-            System.out.println("[" + peerName + "] Uploading to " + uploadPeer + ":" + uploadPort);
-            System.out.println("[" + peerName + "] Downloading from " + downloadPeer + ":" + downloadPort);
+            System.out.println("[" + peerName + "] Uploading to " + uPe + ":" + uPo);
+            System.out.println("[" + peerName + "] Downloading from " + dPe + ":" + dPo);
 
             (new Thread() {
                 @Override
@@ -252,16 +252,16 @@ public class Client extends Peer implements Runnable {
                         System.out.println("==================");
                         Thread.sleep(10000);
                         System.out.println("Making upload connection...");
-                        Socket upSock = new Socket("localhost", uploadPort);
+                        Socket upSock = new Socket("localhost", uPo);
                         ObjectOutputStream oUpStream = new ObjectOutputStream(upSock.getOutputStream());
                         System.out.println("Making download connection...");
-                        Socket downSock = new Socket("localhost", downloadPort);
+                        Socket downSock = new Socket("localhost", dPo);
                         ObjectOutputStream oDownStream = new ObjectOutputStream(downSock.getOutputStream());
                         ObjectInputStream iDownStream = new ObjectInputStream(downSock.getInputStream());
                         System.out.println("Connection Made!");
                         for (;!checkingChunk();) {
                             System.out.println("Got chunk list from neighbor");
-                            writeMessage(oDownStream, "LIST");
+                            printMsg(oDownStream, "LIST");
                             ArrayList<Integer> c = (ArrayList<Integer>) iDownStream.readObject();
                             int i=0;
                             while(i < c.size()){
@@ -278,19 +278,19 @@ public class Client extends Peer implements Runnable {
                             for (i = 0; i < Client.chunkIndex.size(); i++) {
                                 int q = Client.chunkIndex.get(i);
                                 if (!Client.chunkList.containsKey(q)) {
-                                    System.out.println("[" + Client.peerName + "] Ask PEER" + downloadPeer + " Chunk #" + q);
-                                    writeMessage(oDownStream, "ASK");
-                                    writeMessage(oDownStream, q);
+                                    System.out.println("[" + Client.peerName + "] Ask PEER" + dPe + " Chunk #" + q);
+                                    printMsg(oDownStream, "ASK");
+                                    printMsg(oDownStream, q);
                                     if (iDownStream.readInt() != 1) { //Means peer has that chunk
-                                        System.out.println("[" + Client.peerName + "] PEER" + downloadPeer + " doesn't have Chunk #" + q);
+                                        System.out.println("[" + Client.peerName + "] PEER" + dPe + " doesn't have Chunk #" + q);
                                     } 
                                     else {
-                                        writeMessage(oDownStream, "REQUEST");
-                                        writeMessage(oDownStream, q);
+                                        printMsg(oDownStream, "REQUEST");
+                                        printMsg(oDownStream, q);
                                         int x = iDownStream.readInt();
                                         byte[] chunk = (byte[]) iDownStream.readObject();
                                         Client.chunkList.put(x, chunk);
-                                        System.out.println("Received Chunk #" + chunkIndex.get(i) + " from Peer " + downloadPeer);
+                                        System.out.println("Received Chunk #" + chunkIndex.get(i) + " from Peer " + dPe);
                                     }
                                 }
                                 else{
@@ -303,9 +303,9 @@ public class Client extends Peer implements Runnable {
                                 int q = aChunkIndex;
                                 if (Client.chunkList.containsKey(q)) {
                                     System.out.print(q + " ");
-                                    writeMessage(oUpStream, "DATA");
-                                    writeMessage(oUpStream, q);
-                                    writeData(oUpStream, Client.chunkList.get(q));
+                                    printMsg(oUpStream, "DATA");
+                                    printMsg(oUpStream, q);
+                                    storeD(oUpStream, Client.chunkList.get(q));
                                 }
                                 else{
                                     continue;
@@ -323,20 +323,20 @@ public class Client extends Peer implements Runnable {
                 }
             }).start();
 
-            for(;port < 0;){
+            for(; p < 0;){
                 Thread.sleep(500);
             }
 
-            clientServerSocket = new ServerSocket(this.port);
+            css = new ServerSocket(this.p);
 
             for (;;) {
                 ClientSocket localDaemon = new ClientSocket();
                 Socket socket = null;
                 try {
-                    System.out.println("Peer is listening at Port " + clientServerSocket.getLocalPort());
-                    socket = clientServerSocket.accept();
+                    System.out.println("Peer is listening at Port " + css.getLocalPort());
+                    socket = css.accept();
                     localDaemon.setSocket(socket);
-                    localDaemon.setPeerId(Client.peerId);
+                    localDaemon.setPid(Client.pid);
                     localDaemon.setFileChunk(chunkList);
                     localDaemon.start();
                 } catch (IOException e) {
@@ -428,15 +428,15 @@ public class Client extends Peer implements Runnable {
             Scanner f = new Scanner(new FileInputStream("config.txt"));
             // server line
             int serverId = f.nextInt();
-            port = f.nextInt();
+            p = f.nextInt();
             f.close();
-            return port;
+            return p;
 
         } catch (FileNotFoundException e) {
             System.out.println("Configuration failed. Will use random port for all peers");
 
         }
-        return port = 37000;
+        return p = 37000;
     }
 
     public static void main(String[] args) throws IOException {

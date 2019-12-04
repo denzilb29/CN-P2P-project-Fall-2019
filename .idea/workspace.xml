@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="e352981c-c0d4-4a6b-b976-9f2b16c4c854" name="Default Changelist" comment="..">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/Client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSocket.class" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSocket.class" afterDir="false" />
     </list>
     <list id="28101e14-8bbe-427f-8788-7875887a816b" name=".." comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,10 +63,10 @@
     <option name="LAST_COMMIT_MESSAGE" value=".." />
   </component>
   <component name="WindowStateProjectService">
-    <state x="217" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1575484052474">
+    <state x="217" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1575485352551">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="217" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.800@0.0.1280.800" timestamp="1575484052474" />
+    <state x="217" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.800@0.0.1280.800" timestamp="1575485352551" />
     <state x="218" y="2" key="CommitChangelistDialog2" timestamp="1575477237388">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
@@ -73,10 +75,10 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="423" y="324" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.800@0.0.1280.800" timestamp="1575483496106" />
-    <state width="600" height="424" key="javadoc.popup" timestamp="1575481614942">
+    <state width="600" height="424" key="javadoc.popup" timestamp="1575484783515">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="600" height="424" key="javadoc.popup/0.0.1280.800@0.0.1280.800" timestamp="1575481614942" />
+    <state width="600" height="424" key="javadoc.popup/0.0.1280.800@0.0.1280.800" timestamp="1575484783515" />
   </component>
   <component name="masterDetails">
     <states>

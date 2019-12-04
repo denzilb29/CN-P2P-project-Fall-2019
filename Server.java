@@ -34,18 +34,18 @@ class MultithreadedS extends SocketThread {
         for(;;) {
             try {
                 System.out.println("[Server] Server is listening command:");
-                Object payload;
+                Object obj;
                 for(;;) {
                     try {
-                        payload = this.iStream.readObject();
-                        assert(payload instanceof String);
+                        obj = this.iStream.readObject();
+                        assert(obj instanceof String);
                         break;
                     } catch (Exception ignored) {
 
                     }
                 }
-                String message = (String) payload;
-                System.out.println("[Server] Received message (" + message + ") from " + cid);
+                String m = (String) obj;
+                System.out.println("[Server] Received message (" + m + ") from " + cid);
                 int p = -1;
 
                 
@@ -53,7 +53,7 @@ class MultithreadedS extends SocketThread {
 
                 //switch (message) {
 
-                    if (message.compareTo("LIST")==0) {
+                    if (m.compareTo("LIST")==0) {
                         // Send chunk list
                         ArrayList<Integer> q = new ArrayList<Integer>(this.workingChunk.size());
                         int i=0;
@@ -66,13 +66,13 @@ class MultithreadedS extends SocketThread {
                         send(q);
                         //break;
                     }
-                    else if (message.compareTo("NAME")==0) {
+                    else if (m.compareTo("NAME")==0) {
                         // Send file name
                         // Additional let us send the filename
                         send((Object) this.fileName);
                         //break;
                     }
-                    else if(message.compareTo("REQUEST")==0) {
+                    else if(m.compareTo("REQUEST")==0) {
                         // Read first int as chunk number
                         p = this.iStream.readInt();
                         // Send that chunk
@@ -80,14 +80,14 @@ class MultithreadedS extends SocketThread {
                         send(this.workingChunk.get(p));
                        // break;
                     }
-                    else if(message.compareTo("DATA")==0) {
+                    else if(m.compareTo("DATA")==0) {
                         // Read first int as chunk number
                         p = this.iStream.readInt();
                         // Save received data
                         byte[] chunk = (byte[]) this.iStream.readObject();
                         //break;
                     }
-                    else if(message.compareTo("REGISTER")==0) {
+                    else if(m.compareTo("REGISTER")==0) {
                         // Read first int as peer port
                         // int port = this.iStream.readInt();
                         // Return a peer id for client
@@ -97,7 +97,7 @@ class MultithreadedS extends SocketThread {
                         send(port);
                         //break;
                     }
-                    else if(message.compareTo("PEER")==0) {
+                    else if(m.compareTo("PEER")==0) {
                         // Send Peer HasMap
                         System.out.print("[Server] Peer list:");
                         int clientPeerId = iStream.readInt();
@@ -111,7 +111,7 @@ class MultithreadedS extends SocketThread {
                         send((Object) (Server.peerConfig.get(clientPeerId)).get(2));
                        // break;
                     }
-                    else if(message.compareTo("CLOSE")==0) {
+                    else if(m.compareTo("CLOSE")==0) {
                         // Close stream and exit thread
                         oStream.close();
                         iStream.close();

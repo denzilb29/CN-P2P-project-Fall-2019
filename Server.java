@@ -154,42 +154,38 @@ public class Server extends Peer{
             ioexception.printStackTrace();
             System.exit(1);
         }
-        this.chunkFile();
+        this.divide();
     }
 
-    protected void chunkFile() {
+    protected void divide() {
         try {
-            File sepDir = new File("ServerDir");
-            /*if(!sepDir.exists()) {
-                sepDir.mkdir();
-            }*/
-
+            File sd = new File("ServerDir");
             int p=0;
-            if(sepDir.exists()) {
+            if(sd.exists()) {
                 p++;
             }
             else{
-                sepDir.mkdir();
+                sd.mkdir();
             }
-            // Read everything to memory
-            FileInputStream fs = new FileInputStream(this.des);
-            byte[] buffer = new byte[this.BUFFER_SIZE];
-            int ch;
-            int index = 0;
-            for(;(ch = fs.read(buffer)) != -1;) {
-                byte[] bChunk = Arrays.copyOfRange(buffer, 0, ch);
-                chunkList.put(index, bChunk);
-                System.out.println("Chunk #" + index + " = " + ch + "bytes");
-                FileOutputStream fso = new FileOutputStream("ServerDir/" + index, false);
-                fso.write(bChunk);
-                fso.flush();
-                fso.close();
-                buffer = new byte[this.BUFFER_SIZE];
-                index++;
+            FileInputStream fis = new FileInputStream(this.des);
+            byte[] temp = new byte[this.BUFFER_SIZE];
+            int ptr;
+            int idx = 0;
+            for(;(ptr = fis.read(temp)) != -1;) {
+                byte[] bc = Arrays.copyOfRange(temp, 0, ptr);
+                chunkList.put(idx, bc);
+                System.out.println("Chunk #" + idx + " = " + ptr + "bytes");
+                FileOutputStream fos = new FileOutputStream("ServerDir/" + idx, false);
+                fos.write(bc);
+                fos.flush();
+                fos.close();
+                temp = new byte[this.BUFFER_SIZE];
+                idx++;
             }
-            System.out.println("[Server] Total " + index + " chunks");
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[Server] Total " + idx + " chunks");
+        }
+        catch (IOException ioexception) {
+            ioexception.printStackTrace();
         }
     }
 

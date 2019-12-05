@@ -19,7 +19,7 @@ public class Server extends Peer{
     private String val = "Server";
     String wd = System.getProperty("user.dir");
     private String des = wd+"//Test.pptx";
-    public static int pNumber = 37000;
+    public static int pNumber = 40000;
     private ServerSocket ss;
     public static HashMap<Integer, Integer> peerList = new HashMap<>();
     public static HashMap<Integer, ArrayList<Integer>> peerConfig = new HashMap<>();
@@ -83,7 +83,7 @@ public class Server extends Peer{
             scanner.close();
         }
         catch (FileNotFoundException fileNotFoundException) {
-            pNumber = 37000;
+            pNumber = 40000;
         }
     }
 
@@ -166,7 +166,7 @@ public class Server extends Peer{
 
     public Server() {
         
-        this(System.getProperty("user.dir")+"//Test.pptx", 37000);
+        this(System.getProperty("user.dir")+"//Test.pptx", 40000);
     }
 
     public Server(String des) {

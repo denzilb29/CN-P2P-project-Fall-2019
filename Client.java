@@ -18,7 +18,7 @@ public class Client extends Peer implements Runnable {
 
     MultithreadedC mc = new MultithreadedC();
 
-    public static int sp = 37000;
+    public static int sp = 40000;
     private int dPo = -1;
     private int dPe = -1;
     private int uPo = -1;
@@ -83,7 +83,7 @@ public class Client extends Peer implements Runnable {
             }
             fos.flush();
             fos.close();
-            System.out.println("[" + Pname + "] has finished the operation");
+            System.out.println("[" + /*this.pName +*/ "] has finished the operation");
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -353,7 +353,7 @@ public class Client extends Peer implements Runnable {
             System.out.println("Config file Incomplete");
 
         }
-        return p = 37000;
+        return p = 40000;
     }
 
     public static void main(String[] args) throws IOException {

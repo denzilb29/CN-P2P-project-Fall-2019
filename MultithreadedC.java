@@ -24,12 +24,12 @@ class MultithreadedC extends MultithreadedP {
     public void run() {
         for (;;) {
             try {
-                System.out.println("[" + this.pName + "] *******listening******");
+                System.out.println("[" + /*this.pName +*/ "] *******listening******");
                 Object packet = this.ois.readObject();
                 assert (packet instanceof String);
                 String msg = (String) packet;
 
-                System.out.println("[" + this.pName + "] received (" + msg + ")");
+                System.out.println("[" + /*this.pName +*/ "] received (" + msg + ")");
                 int readIndex = -1;
 
                 if(msg.compareTo("LIST") == 0){

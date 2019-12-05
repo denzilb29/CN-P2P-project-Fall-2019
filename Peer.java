@@ -6,7 +6,7 @@ import java.util.*;
 
 abstract class Peer {
 
-    public final int buff_size = 102400; //100kB
+    public final int buff_size = 102400;
     public final static int peer_total = 5;
     public static String Pname = "";
     public abstract void Begin();

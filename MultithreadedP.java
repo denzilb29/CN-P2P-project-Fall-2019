@@ -34,7 +34,7 @@ abstract class MultithreadedP extends Thread {
 
     public void setS(Socket s) {
         this.s = s;
-        System.out.println("[" + pName + "] is connected from " + s.getPort());
+        System.out.println("[" + /*this.pName +*/ "] is connected from " + s.getPort());
         try {
             oos = new ObjectOutputStream(this.s.getOutputStream());
             ois = new ObjectInputStream(this.s.getInputStream());

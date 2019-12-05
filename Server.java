@@ -17,8 +17,8 @@ public class Server extends Peer{
 
     MultithreadedS ms = new MultithreadedS();
     private String val = "Server";
-    String wd = System.getProperty("user.dir");
-    private String des = wd+"//Test.pptx";
+    static String wd = System.getProperty("user.dir");
+    private static String des = wd+"//Test.pptx";
     public static int pNumber = 40000;
     private ServerSocket ss;
     public static HashMap<Integer, Integer> peerList = new HashMap<>();
@@ -178,13 +178,10 @@ public class Server extends Peer{
 
         String wd = System.getProperty("user.dir");
         String fp = wd+"//config.txt";
-        //String appendText = "9000 1 2";
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        
-
-       /* System.out.println("Enter the server/client id number\n");
+        System.out.println("Enter the server/client id number\n");
         String eid = reader.readLine();
         System.out.println("ID entered is "+eid+"\n");
 
@@ -193,15 +190,15 @@ public class Server extends Peer{
         System.out.println("Port number entered is "+eport+"\n");
         
         String appendText = eid+" "+eport;
-        System.out.println(appendText);*/
+        System.out.println(appendText);
         
-        //appendUsingBufferedWriter(filePath,appendText,1);
+        appendUsingBufferedWriter(fp,appendText,1);
 
-        /*try {
+        try {
             Thread.sleep(60000);                 //1000 milliseconds is one second.
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
-        }*/
+        }
 
         ReadConfig();
 

@@ -359,9 +359,8 @@ public class Client extends Peer implements Runnable {
     public static void main(String[] args) throws IOException {
         String str = System.getProperty("user.dir");
         String fp = str+"//config.txt";
-        //String appendText = "9000 1 2";
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-/*
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
         System.out.println("Enter the server/client id number\n");
         String fid = reader.readLine();
         System.out.println("ID entered is "+fid+"\n");
@@ -380,17 +379,23 @@ public class Client extends Peer implements Runnable {
     
         String appendText = fid+" "+fport+" "+fupload+" "+fdownload;
         System.out.println(appendText);
-        
-        appendUsingBufferedWriter(filePath,appendText,1);*/
 
-        /*try {
-            Thread.sleep(40000);                 //1000 milliseconds is one second.
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }*/
+        File file = new File("config.txt");
+        Scanner scanner = new Scanner(file);
+        int lineNum = 0;
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            lineNum++;
+            if(line.contains(fport)) {
+                System.out.println("Port already in use!!");
+                System.exit(0);
+            }
+        }
+
+        appendUsingBufferedWriter(fp,appendText,1);
 
         System.out.println("Do you want to begin? 1 for yes, 0 for no\n");
-        String bp = br.readLine();
+        String bp = reader.readLine();
         int temp = Integer.parseInt(bp);
 
         if(temp == 1){

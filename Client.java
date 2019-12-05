@@ -61,7 +61,7 @@ public class Client extends Peer implements Runnable {
     }
 
     public boolean checkPiece() {
-        for(int i: chunkIndex) {
+        for(int i: Index_of_chunks) {
             if(List_of_chunks.containsKey(i)){
                 continue;
             }
@@ -81,9 +81,9 @@ public class Client extends Peer implements Runnable {
             }
             FileOutputStream fos = new FileOutputStream(f);
             int i=0;
-            while(i < chunkIndex.size()){
-                storeF(i, List_of_chunks.get(chunkIndex.get(i)));
-                fos.write(List_of_chunks.get(chunkIndex.get(i)));
+            while(i < Index_of_chunks.size()){
+                storeF(i, List_of_chunks.get(Index_of_chunks.get(i)));
+                fos.write(List_of_chunks.get(Index_of_chunks.get(i)));
                 ++i;
             }
             fos.flush();
@@ -117,18 +117,18 @@ public class Client extends Peer implements Runnable {
             }
             //Step 2: Get chunk list
             printMsg(os, "LIST");
-            chunkIndex = (ArrayList<Integer>) is.readObject();
+            Index_of_chunks = (ArrayList<Integer>) is.readObject();
             //Step 3: Get initial chunks from server;
-            int begin = (int)(1.0 * chunkIndex.size() / peer_total * (pid % peer_total));
-            int end = (int)(1.0 * chunkIndex.size() / peer_total * ((pid  % peer_total) + 1));
+            int begin = (int)(1.0 * Index_of_chunks.size() / peer_total * (pid % peer_total));
+            int end = (int)(1.0 * Index_of_chunks.size() / peer_total * ((pid  % peer_total) + 1));
             int i = begin;
             while(i < end){
                 printMsg(os, "REQUEST");
-                printMsg(os, chunkIndex.get(i));
+                printMsg(os, Index_of_chunks.get(i));
                 int temp = is.readInt();
                 byte[] piece = (byte[]) is.readObject();
                 List_of_chunks.put(temp, piece);
-                System.out.println("Received Chunk #" + chunkIndex.get(i) + " from server");
+                System.out.println("Received Chunk #" + Index_of_chunks.get(i) + " from server");
                 storeF(temp, piece);
                 ++i;
             }
@@ -199,8 +199,8 @@ public class Client extends Peer implements Runnable {
                                 ++i;
                             }
                             System.out.println();
-                            for (i = 0; i < Client.chunkIndex.size(); i++) {
-                                int temp = Client.chunkIndex.get(i);
+                            for (i = 0; i < Client.Index_of_chunks.size(); i++) {
+                                int temp = Client.Index_of_chunks.get(i);
                                 if (!Client.List_of_chunks.containsKey(temp)) {
                                     System.out.println("[" + Client.Pname + "] Ask PEER" + dPe + " Chunk #" + temp);
                                     printMsg(ods, "ASK");
@@ -214,7 +214,7 @@ public class Client extends Peer implements Runnable {
                                         int temp2 = ids.readInt();
                                         byte[] piece = (byte[]) ids.readObject();
                                         Client.List_of_chunks.put(temp2, piece);
-                                        System.out.println("Received Chunk #" + chunkIndex.get(i) + " from Peer " + dPe);
+                                        System.out.println("Received Chunk #" + Index_of_chunks.get(i) + " from Peer " + dPe);
                                     }
                                 }
                                 else{
@@ -223,7 +223,7 @@ public class Client extends Peer implements Runnable {
                             }
                             System.out.println("[" + Client.Pname + "] Finished pulling...");
                             System.out.println("Begin pushing chunk list...");
-                            for (Integer ii : Client.chunkIndex) {
+                            for (Integer ii : Client.Index_of_chunks) {
                                 int temp = ii;
                                 if (Client.List_of_chunks.containsKey(temp)) {
                                     System.out.print(temp + " ");
@@ -291,8 +291,8 @@ public class Client extends Peer implements Runnable {
                 FileOutputStream fos = new FileOutputStream(Pname + "Dir/summary.txt", false);
                 StringBuilder builder = new StringBuilder();
                 int i=0;
-                while(i < Client.chunkIndex.size()){
-                    int temp = Client.chunkIndex.get(i);
+                while(i < Client.Index_of_chunks.size()){
+                    int temp = Client.Index_of_chunks.get(i);
                     ++i;
                     if (!Client.List_of_chunks.containsKey(temp)) {
                         continue;

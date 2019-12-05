@@ -11,7 +11,7 @@ abstract class Peer {
     public static String Pname = "";
     public abstract void Begin();
     public static HashMap<Integer, byte[]> List_of_chunks = new HashMap<Integer, byte[]>();
-    public static ArrayList<Integer> chunkIndex = new ArrayList<Integer>();
+    public static ArrayList<Integer> Index_of_chunks = new ArrayList<Integer>();
     Peer() {
     }
 }

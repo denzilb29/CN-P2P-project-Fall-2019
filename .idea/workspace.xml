@@ -3,16 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e352981c-c0d4-4a6b-b976-9f2b16c4c854" name="Default Changelist" comment="..">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultithreadedC.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultithreadedP.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultithreadedS.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Peer.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Peer.java" beforeDir="false" afterPath="$PROJECT_DIR$/Peer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server.java" afterDir="false" />
     </list>
     <list id="28101e14-8bbe-427f-8788-7875887a816b" name=".." comment="" />
     <option name="SHOW_DIALOG" value="false" />

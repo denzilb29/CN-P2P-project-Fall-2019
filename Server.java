@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 // This is the file owner server
 public class Server extends Peer{
 
-    MultithreadedS ms = new MultithreadedS();
+    //MultithreadedS ms = new MultithreadedS();
 
     private String val = "Server";
     String wd = System.getProperty("user.dir");

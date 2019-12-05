@@ -17,7 +17,7 @@ import java.lang.*;
 
 public class Client extends Peer implements Runnable {
 
-    MultithreadedC mc = new MultithreadedC();
+    //MultithreadedC mc = new MultithreadedC();
 
     public static int sp = 37000;
 

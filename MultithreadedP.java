@@ -1,4 +1,4 @@
-import java.io.IOException;
+/*import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -7,48 +7,43 @@ import java.util.*;
 
 abstract class MultithreadedP extends Thread {
 
-    protected Socket socket;
-    protected ObjectOutputStream oStream;
-    protected ObjectInputStream iStream;
+    protected Socket s;
+    protected ObjectOutputStream oos;
+    protected ObjectInputStream ois;
+    public String pName = this.getName();
+    protected HashMap<Integer, byte[]> wc;
+    protected String fName = "Dir/Test.pptx";
 
-    public String peerName = this.getName();
+    public abstract void run();
 
-    protected HashMap<Integer, byte[]> workingChunk;
-
-    protected String fileName = "Dir/Test.pptx";
-
-    public void setFileChunk(HashMap<Integer, byte[]> fileChunk)
-    {
-        this.workingChunk = fileChunk;
+    public void sendMsg(int msg) throws IOException {
+        oos.writeInt(msg);
+        oos.flush();
+        oos.reset();
     }
 
-    public void setFileName(String fileName)
-    {
-        this.fileName = fileName;
+    public void sendMsg(Object msg) throws IOException {
+        oos.writeObject(msg);
+        oos.flush();
+        oos.reset();
     }
 
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-        System.out.println("[" + peerName + "] get connected from " + socket.getPort());
+    public void setS(Socket s) {
+        this.s = s;
+        System.out.println("[" + pName + "] get connected from " + s.getPort());
         try {
-            oStream = new ObjectOutputStream(this.socket.getOutputStream());
-            iStream = new ObjectInputStream(this.socket.getInputStream());
+            oos = new ObjectOutputStream(this.s.getOutputStream());
+            ois = new ObjectInputStream(this.s.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void send(Object message) throws IOException {
-        oStream.writeObject(message);
-        oStream.flush();
-        oStream.reset();
+    public void setfName(String fName) {
+        this.fName = fName;
     }
 
-    public void send(int message) throws IOException {
-        oStream.writeInt(message);
-        oStream.flush();
-        oStream.reset();
+    public void ChunkSetter(HashMap<Integer, byte[]> fileChunk) {
+        this.wc = fileChunk;
     }
-
-    public abstract void run();
-}
+}*/

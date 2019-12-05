@@ -4,15 +4,15 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.*;
 
-
 abstract class MultithreadedP extends Thread {
 
     protected Socket s;
     protected ObjectOutputStream oos;
     protected ObjectInputStream ois;
-    public String pName = this.getName();
-    protected HashMap<Integer, byte[]> wc;
     protected String fName = "Dir/Test.pptx";
+    protected HashMap<Integer, byte[]> wc;
+    public String pName = this.getName();
+    
 
     public abstract void run();
 
@@ -20,6 +20,10 @@ abstract class MultithreadedP extends Thread {
         oos.writeInt(msg);
         oos.flush();
         oos.reset();
+    }
+
+    public void ChunkSetter(HashMap<Integer, byte[]> fileChunk) {
+        this.wc = fileChunk;
     }
 
     public void sendMsg(Object msg) throws IOException {
@@ -30,7 +34,7 @@ abstract class MultithreadedP extends Thread {
 
     public void setS(Socket s) {
         this.s = s;
-        System.out.println("[" + pName + "] get connected from " + s.getPort());
+        System.out.println("[" + pName + "] is connected from " + s.getPort());
         try {
             oos = new ObjectOutputStream(this.s.getOutputStream());
             ois = new ObjectInputStream(this.s.getInputStream());
@@ -43,7 +47,5 @@ abstract class MultithreadedP extends Thread {
         this.fName = fName;
     }
 
-    public void ChunkSetter(HashMap<Integer, byte[]> fileChunk) {
-        this.wc = fileChunk;
-    }
+
 }

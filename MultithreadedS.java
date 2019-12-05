@@ -18,23 +18,10 @@ class MultithreadedS extends MultithreadedP {
 
     protected int cid = -1;
 
-    private int generatePID() {
-        int count=0;
-        while(count < 100){
-            if (Server.peerConfig.containsKey(count) && (!Server.peerList.containsKey(count))) {
-                Server.peerList.put(count, (Server.peerConfig.get(count)).get(0));
-                return count;
-            }
-            ++count;
-        }
-        return -1;
-    }
-
-
     public void run() {
         for(;;) {
             try {
-                System.out.println("[Server] Server is listening command:");
+                System.out.println("****** Server Listening ******");
                 Object obj;
                 for(;;) {
                     try {
@@ -46,7 +33,7 @@ class MultithreadedS extends MultithreadedP {
                     }
                 }
                 String m = (String) obj;
-                System.out.println("[Server] Received message (" + m + ") from " + cid);
+                System.out.println("Message received by server from peer " + cid);
                 int var1 = -1;
                 if (m.compareTo("LIST")==0) {
                     ArrayList<Integer> list1 = new ArrayList<Integer>(this.wc.size());
@@ -78,13 +65,12 @@ class MultithreadedS extends MultithreadedP {
                     sendMsg(y);
                 }
                 else if(m.compareTo("PEER")==0) {
-                    System.out.print("[Server] Peer list:");
+                    System.out.print("List of peers: ");
                     int cpid = ois.readInt();
                     for (int i : Server.peerList.keySet()) {
                         System.out.print(i + " ");
                     }
                     System.out.println();
-                    System.out.println("[Server] Send U/D neighbor to clients");
                     sendMsg(Server.peerList);
                     sendMsg((Object) (Server.peerConfig.get(cpid)).get(1));
                     sendMsg((Object) (Server.peerConfig.get(cpid)).get(2));
@@ -98,10 +84,22 @@ class MultithreadedS extends MultithreadedP {
             }
             catch (ClassNotFoundException | IOException ioexception) {
                 ioexception.printStackTrace();
-                System.out.println("[" + this.getName() + "]: Session ended.");
                 Server.peerList.remove(cid);
                 return;
             }
         }
     }
+
+    private int generatePID() {
+        int count=0;
+        while(count < 100){
+            if (Server.peerConfig.containsKey(count) && (!Server.peerList.containsKey(count))) {
+                Server.peerList.put(count, (Server.peerConfig.get(count)).get(0));
+                return count;
+            }
+            ++count;
+        }
+        return -1;
+    }
+
 }

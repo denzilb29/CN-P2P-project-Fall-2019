@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
-
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -22,16 +21,17 @@ class MultithreadedC extends MultithreadedP {
         this.pid = id;
     }
 
-    @Override
     public void run() {
         for (;;) {
             try {
-                System.out.println("[" + this.pName + "] Peer is listening command:");
+                System.out.println("[" + this.pName + "] *******listening******");
                 Object packet = this.ois.readObject();
                 assert (packet instanceof String);
                 String msg = (String) packet;
-                System.out.println("[" + this.pName + "] Received message (" + msg + ")");
+
+                System.out.println("[" + this.pName + "] received (" + msg + ")");
                 int readIndex = -1;
+
                 if(msg.compareTo("LIST") == 0){
                     ArrayList<Integer> list = new ArrayList<Integer>(this.wc.size());
                     for (Integer v : this.wc.keySet()) {
@@ -62,7 +62,7 @@ class MultithreadedC extends MultithreadedP {
                     }
                     else{
                         wc.put(readIndex, piece);
-                        System.out.println("Received Chunk #" + readIndex);
+                        System.out.println("Received the Chunk no. " + readIndex);
                         storePiece(readIndex, piece);
                     }
                 }
@@ -74,7 +74,6 @@ class MultithreadedC extends MultithreadedP {
             }
             catch (ClassNotFoundException | IOException exceptions) {
                 exceptions.printStackTrace();
-                System.out.println("[" + this.getName() + "]: Session ended.");
                 return;
             }
         }

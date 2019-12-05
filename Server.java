@@ -79,18 +79,18 @@ public class Server extends Peer{
                 sd.mkdir();
             }
             FileInputStream fis = new FileInputStream(this.des);
-            byte[] temp = new byte[this.BUFFER_SIZE];
+            byte[] temp = new byte[this.buff_size];
             int ptr;
             int idx = 0;
             for(;(ptr = fis.read(temp)) != -1;) {
                 byte[] bc = Arrays.copyOfRange(temp, 0, ptr);
-                chunkList.put(idx, bc);
+                List_of_chunks.put(idx, bc);
                 System.out.println("Chunk #" + idx + " = " + ptr + "bytes");
                 FileOutputStream fos = new FileOutputStream("ServerDir/" + idx, false);
                 fos.write(bc);
                 fos.flush();
                 fos.close();
-                temp = new byte[this.BUFFER_SIZE];
+                temp = new byte[this.buff_size];
                 idx++;
             }
             System.out.println("[Server] Total " + idx + " chunks");
@@ -101,14 +101,14 @@ public class Server extends Peer{
     }
 
     @Override
-    public void Start() {
+    public void Begin() {
 
         try {
             for(;;) {
                 System.out.println(this.val + " is waiting clients...");
                 Socket socket = ss.accept();
                 MultithreadedS serverThread = new MultithreadedS();
-                serverThread.ChunkSetter(chunkList);
+                serverThread.ChunkSetter(List_of_chunks);
                 serverThread.setfName(this.des);
                 serverThread.setS(socket);
                 serverThread.start();
@@ -218,6 +218,6 @@ public class Server extends Peer{
             inputFile = args[0];
         }
 
-        new Server(inputFile, pNumber).Start();
+        new Server(inputFile, pNumber).Begin();
     }
 }

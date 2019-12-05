@@ -1,4 +1,4 @@
-/*import java.net.*;
+import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.lang.*;
@@ -14,7 +14,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 
-class MultithreadedS extends SocketThread {
+class MultithreadedS extends MultithreadedP {
 
     protected int cid = -1;
 
@@ -38,7 +38,7 @@ class MultithreadedS extends SocketThread {
                 Object obj;
                 for(;;) {
                     try {
-                        obj = this.iStream.readObject();
+                        obj = this.ois.readObject();
                         assert(obj instanceof String);
                         break;
                     } catch (Exception ignored) {
@@ -49,49 +49,49 @@ class MultithreadedS extends SocketThread {
                 System.out.println("[Server] Received message (" + m + ") from " + cid);
                 int var1 = -1;
                 if (m.compareTo("LIST")==0) {
-                    ArrayList<Integer> list1 = new ArrayList<Integer>(this.workingChunk.size());
+                    ArrayList<Integer> list1 = new ArrayList<Integer>(this.wc.size());
                     int i=0;
-                    while(i < this.workingChunk.size()){
-                        if(this.workingChunk.containsKey(i)){
+                    while(i < this.wc.size()){
+                        if(this.wc.containsKey(i)){
                             list1.add(i);
                         }
                         ++i;
                     }
-                    send(list1);
+                    sendMsg(list1);
                 }
                 else if (m.compareTo("NAME")==0) {
-                    send((Object) this.fileName);
+                    sendMsg((Object) this.fName);
                 }
                 else if(m.compareTo("REQUEST")==0) {
-                    var1 = this.iStream.readInt();
-                    send(var1);
-                    send(this.workingChunk.get(var1));
+                    var1 = this.ois.readInt();
+                    sendMsg(var1);
+                    sendMsg(this.wc.get(var1));
                 }
                 else if(m.compareTo("DATA")==0) {
-                    var1 = this.iStream.readInt();
-                    byte[] chunk = (byte[]) this.iStream.readObject();
+                    var1 = this.ois.readInt();
+                    byte[] chunk = (byte[]) this.ois.readObject();
                 }
                 else if(m.compareTo("REGISTER")==0) {
                     int x = this.generatePID();
                     int y = Server.peerList.get(x);
-                    send(x);
-                    send(y);
+                    sendMsg(x);
+                    sendMsg(y);
                 }
                 else if(m.compareTo("PEER")==0) {
                     System.out.print("[Server] Peer list:");
-                    int cpid = iStream.readInt();
+                    int cpid = ois.readInt();
                     for (int i : Server.peerList.keySet()) {
                         System.out.print(i + " ");
                     }
                     System.out.println();
                     System.out.println("[Server] Send U/D neighbor to clients");
-                    send(Server.peerList);
-                    send((Object) (Server.peerConfig.get(cpid)).get(1));
-                    send((Object) (Server.peerConfig.get(cpid)).get(2));
+                    sendMsg(Server.peerList);
+                    sendMsg((Object) (Server.peerConfig.get(cpid)).get(1));
+                    sendMsg((Object) (Server.peerConfig.get(cpid)).get(2));
                 }
                 else if(m.compareTo("CLOSE")==0) {
-                    oStream.close();
-                    iStream.close();
+                    oos.close();
+                    ois.close();
                     Server.peerList.remove(cid);
                     return;
                 }
@@ -104,4 +104,4 @@ class MultithreadedS extends SocketThread {
             }
         }
     }
-}*/
+}

@@ -1,4 +1,4 @@
-/*import java.io.IOException;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -46,4 +46,4 @@ abstract class MultithreadedP extends Thread {
     public void ChunkSetter(HashMap<Integer, byte[]> fileChunk) {
         this.wc = fileChunk;
     }
-}*/
+}

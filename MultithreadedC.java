@@ -1,4 +1,4 @@
-/*import java.io.BufferedWriter;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -14,7 +14,7 @@ import java.io.*;
 import java.util.*;
 import java.lang.*;
 
-class MultithreadedC extends SocketThread {
+class MultithreadedC extends MultithreadedP {
     //test
     protected int pid;
     //hello
@@ -26,49 +26,49 @@ class MultithreadedC extends SocketThread {
     public void run() {
         for (;;) {
             try {
-                System.out.println("[" + this.peerName + "] Peer is listening command:");
-                Object packet = this.iStream.readObject();
+                System.out.println("[" + this.pName + "] Peer is listening command:");
+                Object packet = this.ois.readObject();
                 assert (packet instanceof String);
                 String msg = (String) packet;
-                System.out.println("[" + this.peerName + "] Received message (" + msg + ")");
+                System.out.println("[" + this.pName + "] Received message (" + msg + ")");
                 int readIndex = -1;
                 if(msg.compareTo("LIST") == 0){
-                    ArrayList<Integer> list = new ArrayList<Integer>(this.workingChunk.size());
-                    for (Integer v : this.workingChunk.keySet()) {
+                    ArrayList<Integer> list = new ArrayList<Integer>(this.wc.size());
+                    for (Integer v : this.wc.keySet()) {
                         list.add(v);
                     }
-                    send(list);
+                    sendMsg(list);
                 }
                 else if(msg.compareTo("REQUEST") == 0){
-                    readIndex = this.iStream.readInt();
-                    send(readIndex);
-                    send(this.workingChunk.get(readIndex));
+                    readIndex = this.ois.readInt();
+                    sendMsg(readIndex);
+                    sendMsg(this.wc.get(readIndex));
                 }
                 else if(msg.compareTo("ASK") == 0){
-                    readIndex = this.iStream.readInt();
-                    if (!this.workingChunk.containsKey(readIndex)) {
-                        send(0);
+                    readIndex = this.ois.readInt();
+                    if (!this.wc.containsKey(readIndex)) {
+                        sendMsg(0);
                     }
                     else {
-                        send(1);
+                        sendMsg(1);
                     }
                 }
                 else if(msg.compareTo("DATA") == 0){
-                    readIndex = this.iStream.readInt();
-                    byte[] piece = (byte[]) this.iStream.readObject();
+                    readIndex = this.ois.readInt();
+                    byte[] piece = (byte[]) this.ois.readObject();
                     int t=0;
-                    if (this.workingChunk.containsKey(readIndex)) {
+                    if (this.wc.containsKey(readIndex)) {
                         ++t;
                     }
                     else{
-                        workingChunk.put(readIndex, piece);
+                        wc.put(readIndex, piece);
                         System.out.println("Received Chunk #" + readIndex);
                         storePiece(readIndex, piece);
                     }
                 }
                 else if(msg.compareTo("CLOSE") == 0){
-                    oStream.close();
-                    iStream.close();
+                    oos.close();
+                    ois.close();
                     return;
                 }
             }
@@ -91,4 +91,4 @@ class MultithreadedC extends SocketThread {
             ioException.printStackTrace();
         }
     }
-}*/
+}

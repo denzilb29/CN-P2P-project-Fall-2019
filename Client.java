@@ -17,7 +17,7 @@ import java.lang.*;
 
 public class Client extends Peer implements Runnable {
 
-    //MultithreadedC mc = new MultithreadedC();
+    MultithreadedC mc = new MultithreadedC();
 
     public static int sp = 37000;
 
@@ -254,14 +254,14 @@ public class Client extends Peer implements Runnable {
             css = new ServerSocket(this.p);
 
             for (;;) {
-                ClientSocket ld = new ClientSocket();
+                MultithreadedC ld = new MultithreadedC();
                 Socket sckt = null;
                 try {
                     System.out.println("Peer is listening at Port " + css.getLocalPort());
                     sckt = css.accept();
-                    ld.setSocket(sckt);
+                    ld.setS(sckt);
                     ld.setPid(Client.pid);
-                    ld.setFileChunk(chunkList);
+                    ld.ChunkSetter(chunkList);
                     ld.start();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();

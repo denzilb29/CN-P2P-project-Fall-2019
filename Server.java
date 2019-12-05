@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 // This is the file owner server
 public class Server extends Peer{
 
-    //MultithreadedS ms = new MultithreadedS();
+    MultithreadedS ms = new MultithreadedS();
 
     private String val = "Server";
     String wd = System.getProperty("user.dir");
@@ -107,10 +107,10 @@ public class Server extends Peer{
             for(;;) {
                 System.out.println(this.val + " is waiting clients...");
                 Socket socket = ss.accept();
-                ServerThread serverThread = new ServerThread();
-                serverThread.setFileChunk(chunkList);
-                serverThread.setFileName(this.des);
-                serverThread.setSocket(socket);
+                MultithreadedS serverThread = new MultithreadedS();
+                serverThread.ChunkSetter(chunkList);
+                serverThread.setfName(this.des);
+                serverThread.setS(socket);
                 serverThread.start();
             }
         } catch (IOException ioexception) {
